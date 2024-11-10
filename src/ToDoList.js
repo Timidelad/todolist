@@ -23,12 +23,14 @@ function ToDoList() {
             let newItem = {
                 id: lists.length + 1,
                 checkbox: false,
-                text: inputValue
+                text: inputValue,
+                isEditing : false
             };
             updateList([...lists, newItem])
             setInputValue('')
         }
     }
+    
     function checkboxChange(id) {
         let updatedList = lists.map((item) => (
             item.id === id ? {...item, checkbox: !item.checkbox} : item
@@ -41,11 +43,25 @@ function ToDoList() {
         ));
         updateList(newList)
     }
+
+    function saveTodo(id, newText) {
+        let updatedList = lists.map((list) => (
+            list.id === id ? {...list, text : newText, isEditing : false} : list
+        ))
+        updateList(updatedList)
+    }
+
+    function editIt(id) {
+        let updatedList = lists.map((list)=>(
+            list.id === id ? {...list, isEditing : true} : list
+        ));
+        updateList(updatedList)
+    }
     return(
-        <div className=" mt-5 mx-3 md:mx-[64px] lg:mx-[128px]">
+        <div className=" mt-5 mx-3 md:mx-[64px] lg:mx-[128px] ">
             <div className="flex items-center justify-center w-full">
                 <input 
-                    className="border-2 border-myRound w-full bg-transparent rounded-md py-2 ps-1 focus:border-blue-500 focus:outline-none text-wrap text-white"
+                    className="border-2 border-myRound w-full bg-transparent rounded-md py-2 ps-1 focus:border-blue-500 focus:outline-none text-wrap"
                     type="text"
                     placeholder="Add your task"
                     onChange={(e) => handleInputChange(e)}
@@ -67,11 +83,27 @@ function ToDoList() {
                         onChange={() => checkboxChange(item.id)}
                         style={{width: '35px', height: '35px'}}
                         />
-                        <label
-                            onDoubleClick={() => checkboxChange(item.id)}
+
+
+                        {item.isEditing? 
+                        (<input 
+                            type="text"
+                            defaultValue={item.text}
+                            className="bg-bgCol  font-normal text-[20px] text-white py-1.5 ps-1 w-full text-wrap"
+                            onBlur={(e) => saveTodo(item.id, e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    saveTodo(item.id, e.target.value)
+                                }
+                            }}
+                         />) : (
+                            <span
+                            onClick={() => editIt(item.id)}
                             style={(item.checkbox) ? {textDecoration: 'line-through'} : null}
                             className="bg-bgCol  font-normal text-[20px] text-white py-1.5 ps-1 w-full"
-                        >{item.text}</label>
+                        >{item.text}</span>
+                         )}
+
                         <TiDelete 
                             onClick={() => deleteList(item.id)}
                             style={{width:'40px', height: '40px', color: '#EF0D49'}}
@@ -84,7 +116,7 @@ function ToDoList() {
             <br />
             <br />
 
-            <div className="text-white text-center">PROJECT CREATED BY <a href="https://linktr.ee/timidelad" target="_blank" rel="noreferrer" className="text-greencol">Timi Delad</a> </div>
+            <div className="text-white text-center absolute bottom-0 left-0 w-full">PROJECT CREATED BY <a href="https://linktr.ee/timidelad" target="_blank" className="text-greencol">Timi Delad</a> </div>
             
         </div>
         
