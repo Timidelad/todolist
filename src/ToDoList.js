@@ -19,7 +19,10 @@ function ToDoList() {
       }, [lists]);
 
     function addToList() {
-        if(inputValue.trim !== "") {
+
+        if(inputValue.trim() === '') {
+            alert(`Type something, you can't have an empty task!`)
+        } else {
             let newItem = {
                 id: lists.length + 1,
                 checkbox: false,
@@ -45,10 +48,22 @@ function ToDoList() {
     }
 
     function saveTodo(id, newText) {
-        let updatedList = lists.map((list) => (
-            list.id === id ? {...list, text : newText, isEditing : false} : list
-        ))
-        updateList(updatedList)
+        if(newText.trim() === '') {
+            alert(`Sorry, you can't have an empty task!`)
+            let newList = lists.filter((item)=> (
+                item.id !== id
+            ));
+            updateList(newList)
+        } else {
+            let updatedList = lists.map((list) => (
+                list.id === id ? {...list, text : newText, isEditing : false} : list
+            ))
+            updateList(updatedList)
+        }
+        // let updatedList = lists.map((list) => (
+        //     list.id === id ? {...list, text : newText, isEditing : false} : list
+        // ))
+        // updateList(updatedList)
     }
 
     function editIt(id) {
@@ -61,11 +76,16 @@ function ToDoList() {
         <div className=" mt-5 mx-3 md:mx-[64px] lg:mx-[128px] ">
             <div className="flex items-center justify-center w-full">
                 <input 
-                    className="border-2 border-myRound w-full bg-transparent rounded-md py-2 ps-1 focus:border-blue-500 focus:outline-none text-wrap"
+                    className="border-2 border-myRound w-full bg-transparent rounded-md py-2 ps-1 focus:border-blue-500 focus:outline-none text-wrap text-white"
                     type="text"
                     placeholder="Add your task"
                     onChange={(e) => handleInputChange(e)}
                     value={inputValue}
+                    onKeyDown={(e) => {
+                        if(e.key === 'Enter') {
+                            addToList()
+                        }
+                    }}
                 />
                 <IoMdAddCircle 
                     onClick={addToList} 
@@ -116,7 +136,7 @@ function ToDoList() {
             <br />
             <br />
 
-            <div className="text-white text-center absolute bottom-0 left-0 w-full">PROJECT CREATED BY <a href="https://linktr.ee/timidelad" target="_blank" className="text-greencol">Timi Delad</a> </div>
+            <div className="text-white text-center absolute bottom-0 left-0 w-full">PROJECT CREATED BY <a href="https://linktr.ee/timidelad" target="_blank" rel="noopener noreferrer" className="text-greencol">Timi Delad</a> </div>
             
         </div>
         
